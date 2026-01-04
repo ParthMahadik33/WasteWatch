@@ -8,6 +8,7 @@ Flask application for WasteSnap
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from datetime import datetime
 import os
+from auth import init_db, signup as auth_signup, signin as auth_signin
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -66,18 +67,18 @@ def signin():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        # TODO: Validate credentials against database
-        # For now, just a placeholder
+        # Validate credentials using auth module
+        success, message, user_data = auth_signin(email, password)
         
-        # Example validation (replace with actual database check)
-        if email and password:
-            # Set session (mock login)
-            session['user_id'] = 1
-            session['user_email'] = email
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('dashboard'))
+        if success and user_data:
+            # Set session
+            session['user_id'] = user_data['id']
+            session['user_email'] = user_data['email']
+            session['user_name'] = user_data['name']
+            flash(message, 'success')
+            return redirect(url_for('index'))
         else:
-            flash('Invalid email or password', 'error')
+            flash(message, 'error')
     
     return render_template('signin.html')
 
@@ -88,24 +89,27 @@ def signup():
     if request.method == 'POST':
         # Get form data
         name = request.form.get('name')
+        number = request.form.get('number')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
         # Basic validation
-        if not all([name, email, password, confirm_password]):
+        if not all([name, number, email, password, confirm_password]):
             flash('All fields are required', 'error')
         elif password != confirm_password:
             flash('Passwords do not match', 'error')
         else:
-            # TODO: Save user to database
-            # For now, just a placeholder
+            # Register user using auth module
+            success, message, user_id = auth_signup(name, number, email, password)
             
-            # Set session (mock registration)
-            session['user_id'] = 1
-            session['user_email'] = email
-            flash('Account created successfully!', 'success')
-            return redirect(url_for('dashboard'))
+            if success and user_id:
+                # Don't set session - user needs to sign in
+                # Redirect to signin page with success message
+                flash('Signup successful! Please sign in to continue.', 'success')
+                return redirect(url_for('signin'))
+            else:
+                flash(message, 'error')
     
     return render_template('signup.html')
 
@@ -198,6 +202,7 @@ def internal_server_error(e):
 # ============================================
 
 if __name__ == '__main__':
+    init_db()
     # Run the Flask app
     # Debug mode is ON - turn OFF in production!
     app.run(debug=True, host='0.0.0.0', port=5000)

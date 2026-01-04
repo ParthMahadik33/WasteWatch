@@ -76,6 +76,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // User Dropdown Menu Functionality
+    const userMenuBtn = document.getElementById('user-menu-btn');
+    const userDropdown = document.querySelector('.user-dropdown');
+    const dropdownMenu = document.getElementById('user-dropdown-menu');
+    
+    if (userMenuBtn && userDropdown && dropdownMenu) {
+        // Toggle dropdown on button click
+        userMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+        
+        // Close dropdown when clicking on a dropdown item
+        const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                userDropdown.classList.remove('active');
+            });
+        });
+    }
+
 });
 
 // Optional: Log when user leaves the page
