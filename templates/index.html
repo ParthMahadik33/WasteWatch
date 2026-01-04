@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WasteSnap - Report Waste. Restore Cleanliness.</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <nav class="nav-container">
+            <!-- Logo / Brand -->
+            <div class="nav-brand">
+                <a href="/">WasteSnap</a>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/signin" class="nav-link">Sign In</a>
+                <a href="/signup" class="nav-button">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="hero-section">
+        <div class="hero-content">
+            <!-- Main Heading -->
+            <h1 class="hero-heading">Report Waste. Restore Cleanliness.</h1>
+            
+            <!-- Subheading -->
+            <p class="hero-subheading">
+                WasteSnap helps communities report waste issues instantly using photos and location.
+            </p>
+            
+            <!-- Call to Action Button -->
+            <a href="/get-started" class="cta-button">Get Started</a>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>
