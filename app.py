@@ -76,7 +76,7 @@ def signin():
             session['user_email'] = user_data['email']
             session['user_name'] = user_data['name']
             flash(message, 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('index'))
         else:
             flash(message, 'error')
     
@@ -104,12 +104,10 @@ def signup():
             success, message, user_id = auth_signup(name, number, email, password)
             
             if success and user_id:
-                # Set session
-                session['user_id'] = user_id
-                session['user_email'] = email
-                session['user_name'] = name
-                flash(message, 'success')
-                return redirect(url_for('dashboard'))
+                # Don't set session - user needs to sign in
+                # Redirect to signin page with success message
+                flash('Signup successful! Please sign in to continue.', 'success')
+                return redirect(url_for('signin'))
             else:
                 flash(message, 'error')
     
@@ -207,4 +205,4 @@ if __name__ == '__main__':
     init_db()
     # Run the Flask app
     # Debug mode is ON - turn OFF in production!
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=5000)

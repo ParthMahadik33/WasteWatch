@@ -24,8 +24,22 @@
             
             <!-- Navigation Links -->
             <div class="nav-links">
-                <a href="/signin" class="nav-link">Sign In</a>
-                <a href="/signup" class="nav-button">Sign Up</a>
+                {% if session.user_id %}
+                    <!-- User Dropdown (when logged in) -->
+                    <div class="user-dropdown">
+                        <button class="user-menu-button" id="user-menu-btn">
+                            <span class="user-name">{{ session.user_name }}</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="user-dropdown-menu">
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Sign In / Sign Up (when not logged in) -->
+                    <a href="/signin" class="nav-link">Sign In</a>
+                    <a href="/signup" class="nav-button">Sign Up</a>
+                {% endif %}
             </div>
         </nav>
     </header>
@@ -41,8 +55,17 @@
                 WasteWatch helps communities report waste issues instantly using photos and location.
             </p>
             
-            <!-- Call to Action Button -->
-            <a href="/get-started" class="cta-button">Get Started</a>
+            <!-- Action Buttons -->
+            {% if session.user_id %}
+                <!-- Show action buttons when logged in -->
+                <div class="action-buttons">
+                    <a href="/report" class="cta-button cta-primary">Snap Waste</a>
+                    <a href="/find-waste" class="cta-button cta-secondary">Find Waste Location</a>
+                </div>
+            {% else %}
+                <!-- Show Get Started button when not logged in -->
+                <a href="/signup" class="cta-button">Get Started</a>
+            {% endif %}
         </div>
     </main>
 
