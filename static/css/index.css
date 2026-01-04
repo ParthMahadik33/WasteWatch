@@ -95,92 +95,6 @@ a {
     color: #ffffff;
 }
 
-/* User Dropdown */
-.user-dropdown {
-    position: relative;
-}
-
-.user-menu-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #1f2933;
-    background-color: #f3f4f6;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: inherit;
-}
-
-.user-menu-button:hover {
-    background-color: #e5e7eb;
-    border-color: #d1d5db;
-}
-
-.user-name {
-    color: #1f2933;
-}
-
-.dropdown-arrow {
-    font-size: 0.7rem;
-    color: #6b7280;
-    transition: transform 0.2s ease;
-}
-
-.user-dropdown.active .dropdown-arrow {
-    transform: rotate(180deg);
-}
-
-.dropdown-menu {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    right: 0;
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    min-width: 150px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.2s ease;
-    z-index: 1000;
-}
-
-.user-dropdown.active .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.dropdown-item {
-    display: block;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    color: #4b5563;
-    text-decoration: none;
-    transition: background-color 0.2s ease;
-    border-radius: 6px;
-    margin: 0.25rem;
-}
-
-.dropdown-item:hover {
-    background-color: #f3f4f6;
-    color: #1f2933;
-}
-
-.dropdown-item:first-child {
-    margin-top: 0.5rem;
-}
-
-.dropdown-item:last-child {
-    margin-bottom: 0.5rem;
-}
-
 /* ============================================
    HERO SECTION
    ============================================ */
@@ -218,15 +132,6 @@ a {
     margin-right: auto;
 }
 
-/* Action Buttons Container */
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-}
-
 /* Call to Action Button */
 .cta-button {
     display: inline-block;
@@ -239,7 +144,6 @@ a {
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
-    text-align: center;
 }
 
 .cta-button:hover {
@@ -249,26 +153,6 @@ a {
 
 .cta-button:active {
     transform: translateY(0);
-}
-
-/* Primary Button (Snap Waste) */
-.cta-primary {
-    background-color: #2e7d32;
-}
-
-.cta-primary:hover {
-    background-color: #255d28;
-}
-
-/* Secondary Button (Find Waste Location) */
-.cta-secondary {
-    background-color: #1f2933;
-    border: 2px solid #1f2933;
-}
-
-.cta-secondary:hover {
-    background-color: #111827;
-    border-color: #111827;
 }
 
 /* ============================================
@@ -298,11 +182,6 @@ a {
         font-size: 0.9rem;
     }
 
-    .user-menu-button {
-        padding: 0.5rem 0.875rem;
-        font-size: 0.9rem;
-    }
-
     .hero-heading {
         font-size: 2.25rem;
     }
@@ -314,10 +193,6 @@ a {
     .cta-button {
         font-size: 1rem;
         padding: 0.9rem 2rem;
-    }
-
-    .action-buttons {
-        gap: 0.75rem;
     }
 }
 
@@ -344,16 +219,6 @@ a {
         font-size: 0.85rem;
     }
 
-    .user-menu-button {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.85rem;
-    }
-
-    .dropdown-menu {
-        right: 0;
-        min-width: 120px;
-    }
-
     .hero-section {
         padding: 1.5rem;
     }
@@ -371,15 +236,5 @@ a {
     .cta-button {
         font-size: 0.95rem;
         padding: 0.85rem 1.75rem;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .cta-button {
-        width: 100%;
-        max-width: 300px;
     }
 }
