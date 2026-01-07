@@ -1,6 +1,3 @@
 Flask==3.0.0
 Werkzeug==3.0.1
-# Pillow is optional - uncomment the line below if you want image compression
-# Note: For Render deployment, you may need to add system packages in render.yaml
-# Pillow==10.1.0
 

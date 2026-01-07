@@ -13,15 +13,6 @@ from werkzeug.utils import secure_filename
 from auth import init_db, signup as auth_signup, signin as auth_signin
 from reports_db import init_reports_db, create_report, get_all_reports, get_reports_by_user
 
-# Try to import Pillow for image compression (optional)
-# Pillow is optional - the app works without it, but images won't be compressed
-try:
-    from PIL import Image
-    PIL_AVAILABLE = True
-except ImportError:
-    PIL_AVAILABLE = False
-    print("Note: Pillow not available. Image compression will be skipped.")
-
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -48,44 +39,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def compress_image(image_path, max_size=(1920, 1920), quality=85):
-    """
-    Compress an image if PIL is available (optional feature)
-    
-    Args:
-        image_path: Path to the image file
-        max_size: Maximum dimensions (width, height)
-        quality: JPEG quality (1-100)
-    
-    Returns:
-        bool: True if compression was successful, False otherwise
-    """
-    if not PIL_AVAILABLE:
-        # Pillow not available - skip compression, image will be saved as-is
-        return False
-    
-    try:
-        img = Image.open(image_path)
-        
-        # Convert RGBA to RGB if necessary (for JPEG)
-        if img.mode in ('RGBA', 'LA', 'P'):
-            background = Image.new('RGB', img.size, (255, 255, 255))
-            if img.mode == 'P':
-                img = img.convert('RGBA')
-            background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
-            img = background
-        
-        # Resize if image is larger than max_size
-        img.thumbnail(max_size, Image.Resampling.LANCZOS)
-        
-        # Save compressed image
-        img.save(image_path, 'JPEG', quality=quality, optimize=True)
-        return True
-    except Exception as e:
-        # If compression fails, continue without compression
-        print(f"Warning: Image compression failed: {str(e)}. Continuing without compression.")
-        return False
-
 def save_uploaded_file(file):
     """
     Save uploaded file with unique filename
@@ -104,9 +57,6 @@ def save_uploaded_file(file):
         
         # Save file
         file.save(filepath)
-        
-        # Try to compress image
-        compress_image(filepath)
         
         # Return relative path for database storage
         return f"static/uploads/{unique_filename}"
