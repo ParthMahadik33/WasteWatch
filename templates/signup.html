@@ -3,136 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - WasteSnap</title>
+    <title>WasteWatch | Sign Up</title>
     
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
     
-    <!-- Google Fonts - Inter -->
+    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar -->
-    <header class="navbar">
-        <nav class="nav-container">
-            <div class="nav-brand">
-                <a href="/">WasteSnap</a>
-            </div>
-            <div class="nav-links">
-                <a href="/signin" class="nav-link">Sign In</a>
-            </div>
-        </nav>
-    </header>
+    <div class="auth-wrapper">
+        <img src="{{ url_for('static', filename='assets/image-removebg-preview.png') }}" class="logo" alt="WasteWatch Logo">
+        <h1>WasteWatch</h1>
+        <p class="subtitle">Join our community to make a difference</p>
 
-    <!-- Sign Up Section -->
-    <main class="auth-section">
-        <div class="auth-container">
-            <div class="auth-card">
-                <h1 class="auth-title">Create Your Account</h1>
-                <p class="auth-subtitle">Join WasteSnap to start reporting waste issues in your community</p>
-                
-                <!-- Flash Messages -->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <div class="flash-messages">
-                            {% for category, message in messages %}
-                                <div class="flash-message flash-{{ category }}">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                {% endwith %}
-                
-                <!-- Sign Up Form -->
-                <form id="signup-form" class="auth-form" method="POST" action="/signup">
-                    <div class="form-group">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input 
-                            type="text" 
-                            id="name" 
-                            name="name" 
-                            class="form-input" 
-                            placeholder="Enter your full name"
-                            required
-                            autocomplete="name"
-                        >
-                        <span class="error-message" id="name-error"></span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="number" class="form-label">Phone Number</label>
-                        <input 
-                            type="tel" 
-                            id="number" 
-                            name="number" 
-                            class="form-input" 
-                            placeholder="Enter your phone number"
-                            required
-                            autocomplete="tel"
-                        >
-                        <span class="error-message" id="number-error"></span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            class="form-input" 
-                            placeholder="Enter your email"
-                            required
-                            autocomplete="email"
-                        >
-                        <span class="error-message" id="email-error"></span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            class="form-input" 
-                            placeholder="Enter your password (min. 6 characters)"
-                            required
-                            autocomplete="new-password"
-                        >
-                        <span class="error-message" id="password-error"></span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="confirm_password" class="form-label">Confirm Password</label>
-                        <input 
-                            type="password" 
-                            id="confirm_password" 
-                            name="confirm_password" 
-                            class="form-input" 
-                            placeholder="Confirm your password"
-                            required
-                            autocomplete="new-password"
-                        >
-                        <span class="error-message" id="confirm-password-error"></span>
-                    </div>
-                    
-                    <button type="submit" class="auth-button" id="submit-btn">
-                        <span id="submit-text">Sign Up</span>
-                        <span id="submit-loading" class="loading-spinner" style="display: none;">Creating account...</span>
-                    </button>
-                </form>
-                
-                <div class="auth-footer">
-                    <p>Already have an account? <a href="/signin" class="auth-link">Sign In</a></p>
-                </div>
+        <div class="auth-card">
+            <div class="tabs">
+                <a href="/signin" class="tab">Sign In</a>
+                <span class="tab active">Sign Up</span>
             </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/signup" id="signup-form">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required autocomplete="name">
+
+                <label for="number">Phone Number</label>
+                <input type="tel" id="number" name="number" placeholder="Enter your phone number" required autocomplete="tel">
+
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your.email@example.com" required autocomplete="email">
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a strong password" required autocomplete="new-password">
+
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required autocomplete="new-password">
+
+                <button type="submit" id="submit-btn">
+                    <span id="submit-text">Create Account</span>
+                    <span id="submit-loading" class="loading-spinner" style="display: none;">Creating account...</span>
+                </button>
+            </form>
         </div>
-    </main>
+    </div>
 
-    <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/signup.js') }}"></script>
 </body>
 </html>
-

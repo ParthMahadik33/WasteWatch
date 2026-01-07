@@ -8,66 +8,64 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     
-    <!-- Google Fonts - Inter -->
+    <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Background Video -->
+    <video autoplay muted loop class="bg-video">
+        <source src="{{ url_for('static', filename='assets/istockphoto-1163773783-640_adpp_is.mp4') }}" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
     <!-- Navbar -->
-    <header class="navbar">
-        <nav class="nav-container">
-            <!-- Logo / Brand -->
-            <div class="nav-brand">
-                <a href="/">WasteWatch</a>
-            </div>
-            
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                {% if session.user_id %}
-                    <!-- User Dropdown (when logged in) -->
-                    <div class="user-dropdown">
-                        <button class="user-menu-button" id="user-menu-btn">
-                            <span class="user-name">{{ session.user_name }}</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" id="user-dropdown-menu">
-                            <a href="/logout" class="dropdown-item">Logout</a>
-                        </div>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/image-removebg-preview.png') }}" alt="WasteWatch Logo">
+            <span>WasteWatch</span>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            {% if session.user_id %}
+                <!-- User Dropdown (when logged in) -->
+                <li class="user-dropdown">
+                    <button class="user-menu-button" id="user-menu-btn">
+                        <span class="user-name">{{ session.user_name }}</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown-menu">
+                        <a href="/snap" class="dropdown-item">Snap Waste</a>
+                        <a href="/find-waste" class="dropdown-item">Find Waste</a>
+                        <a href="/logout" class="dropdown-item">Logout</a>
                     </div>
-                {% else %}
-                    <!-- Sign In / Sign Up (when not logged in) -->
-                    <a href="/signin" class="nav-link">Sign In</a>
-                    <a href="/signup" class="nav-button">Sign Up</a>
-                {% endif %}
-            </div>
-        </nav>
-    </header>
+                </li>
+            {% else %}
+                <!-- Sign In / Sign Up (when not logged in) -->
+                <li><a href="/signin">Sign In</a></li>
+                <li><a href="/signup" class="signup">Sign Up</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 
     <!-- Hero Section -->
-    <main class="hero-section">
-        <div class="hero-content">
-            <!-- Main Heading -->
-            <h1 class="hero-heading">Report Waste. Restore Cleanliness.</h1>
-            
-            <!-- Subheading -->
-            <p class="hero-subheading">
-                WasteWatch helps communities report waste issues instantly using photos and location.
-            </p>
-            
-            <!-- Action Buttons -->
+    <section class="hero">
+        <h1>WasteWatch</h1>
+        <p>See it. Report it. Clean it.</p>
+
+        <div class="buttons">
             {% if session.user_id %}
                 <!-- Show action buttons when logged in -->
-                <div class="action-buttons">
-                    <a href="/snap" class="cta-button cta-primary">Snap Waste</a>
-                    <a href="/find-waste" class="cta-button cta-secondary">Find Waste Location</a>
-                </div>
+                <a href="/snap" class="cta">Snap Waste</a>
+                <a href="/find-waste" class="secondary">Find Waste Location</a>
             {% else %}
                 <!-- Show Get Started button when not logged in -->
-                <a href="/signup" class="cta-button">Get Started</a>
+                <a href="/signup" class="cta">Get Started</a>
             {% endif %}
         </div>
-    </main>
+    </section>
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
