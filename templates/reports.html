@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Waste Location - WasteWatch</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .reports-section {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .reports-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .reports-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2933;
+            margin-bottom: 0.5rem;
+        }
+        
+        .reports-subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+        
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .report-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .report-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        .report-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-type.plastic { background-color: #dbeafe; color: #1e40af; }
+        .report-type.organic { background-color: #d1fae5; color: #065f46; }
+        .report-type.construction { background-color: #fef3c7; color: #92400e; }
+        .report-type.ewaste { background-color: #e0e7ff; color: #3730a3; }
+        .report-type.mixed { background-color: #f3f4f6; color: #374151; }
+        
+        .report-location {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+        
+        .report-status.pending { background-color: #fef3c7; color: #92400e; }
+        .report-status.in-progress { background-color: #dbeafe; color: #1e40af; }
+        .report-status.cleaned { background-color: #d1fae5; color: #065f46; }
+        
+        .no-reports {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <nav class="nav-container">
+            <!-- Logo / Brand -->
+            <div class="nav-brand">
+                <a href="/">WasteWatch</a>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                {% if session.user_id %}
+                    <!-- User Dropdown (when logged in) -->
+                    <div class="user-dropdown">
+                        <button class="user-menu-button" id="user-menu-btn">
+                            <span class="user-name">{{ session.user_name }}</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="user-dropdown-menu">
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Sign In / Sign Up (when not logged in) -->
+                    <a href="/signin" class="nav-link">Sign In</a>
+                    <a href="/signup" class="nav-button">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="reports-section">
+        <a href="/" class="back-link">← Back to Home</a>
+        
+        <div class="reports-header">
+            <h1 class="reports-title">Find Waste Locations</h1>
+            <p class="reports-subtitle">View all reported waste locations</p>
+        </div>
+
+        {% if reports %}
+            <div class="reports-grid">
+                {% for report in reports %}
+                    <div class="report-card">
+                        {% if report.photo_path %}
+                            {% set photo_url = report.photo_path.replace('static/', '') %}
+                            <img src="{{ url_for('static', filename=photo_url) }}" 
+                                 alt="Waste photo" 
+                                 class="report-photo"
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27200%27 height=%27200%27%3E%3Crect fill=%27%23e5e7eb%27 width=%27200%27 height=%27200%27/%3E%3Ctext fill=%27%239ca3af%27 font-family=%27sans-serif%27 font-size=%2714%27 dy=%2710.5%27 font-weight=%27bold%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27%3ENo Image%3C/text%3E%3C/svg%3E'">
+                        {% endif %}
+                        
+                        <div class="report-type {{ report.waste_type.lower().replace(' ', '-').replace('/', '-') }}">
+                            {{ report.waste_type }}
+                        </div>
+                        
+                        {% if report.readable_area %}
+                            <div class="report-location">📍 {{ report.readable_area }}</div>
+                        {% elif report.landmark %}
+                            <div class="report-location">📍 {{ report.landmark }}</div>
+                        {% else %}
+                            <div class="report-location">📍 {{ "%.6f"|format(report.latitude) }}, {{ "%.6f"|format(report.longitude) }}</div>
+                        {% endif %}
+                        
+                        {% if report.description %}
+                            <p style="font-size: 0.9rem; color: #4b5563; margin: 0.5rem 0;">{{ report.description }}</p>
+                        {% endif %}
+                        
+                        {% if report.severity %}
+                            <div style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem;">
+                                Severity: <strong>{{ report.severity }}</strong>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="report-status {{ report.report_status.lower().replace(' ', '-') }}">
+                            {{ report.report_status }}
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; color: #9ca3af; margin-top: 0.75rem;">
+                            Reported by: {{ report.username or 'Anonymous' }}<br>
+                            {{ report.date_time }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-reports">
+                <p>No waste reports found yet.</p>
+                <a href="/snap" class="cta-button" style="margin-top: 1rem; display: inline-block;">Report Waste</a>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>
+

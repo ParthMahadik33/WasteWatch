@@ -8,7 +8,17 @@ Flask application for WasteSnap
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from datetime import datetime
 import os
+import uuid
+from werkzeug.utils import secure_filename
 from auth import init_db, signup as auth_signup, signin as auth_signin
+from reports_db import init_reports_db, create_report, get_all_reports, get_reports_by_user
+
+# Try to import Pillow for image compression
+try:
+    from PIL import Image
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -35,6 +45,68 @@ def allowed_file(filename):
     """Check if file extension is allowed"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def compress_image(image_path, max_size=(1920, 1920), quality=85):
+    """
+    Compress an image if PIL is available
+    
+    Args:
+        image_path: Path to the image file
+        max_size: Maximum dimensions (width, height)
+        quality: JPEG quality (1-100)
+    
+    Returns:
+        bool: True if compression was successful, False otherwise
+    """
+    if not PIL_AVAILABLE:
+        return False
+    
+    try:
+        img = Image.open(image_path)
+        
+        # Convert RGBA to RGB if necessary (for JPEG)
+        if img.mode in ('RGBA', 'LA', 'P'):
+            background = Image.new('RGB', img.size, (255, 255, 255))
+            if img.mode == 'P':
+                img = img.convert('RGBA')
+            background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+            img = background
+        
+        # Resize if image is larger than max_size
+        img.thumbnail(max_size, Image.Resampling.LANCZOS)
+        
+        # Save compressed image
+        img.save(image_path, 'JPEG', quality=quality, optimize=True)
+        return True
+    except Exception as e:
+        print(f"Error compressing image: {str(e)}")
+        return False
+
+def save_uploaded_file(file):
+    """
+    Save uploaded file with unique filename
+    
+    Args:
+        file: Flask file object
+    
+    Returns:
+        str: Relative path to saved file, or None if error
+    """
+    if file and allowed_file(file.filename):
+        # Generate unique filename
+        file_ext = file.filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"{uuid.uuid4().hex}.{file_ext}"
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+        
+        # Save file
+        file.save(filepath)
+        
+        # Try to compress image
+        compress_image(filepath)
+        
+        # Return relative path for database storage
+        return f"static/uploads/{unique_filename}"
+    return None
 
 
 # ============================================
@@ -122,16 +194,16 @@ def dashboard():
         flash('Please log in to access the dashboard', 'warning')
         return redirect(url_for('signin'))
     
-    # TODO: Fetch user's reports from database
-    # For now, mock data
-    user_reports = []
+    # Fetch user's reports from database
+    user_id = session['user_id']
+    user_reports = get_reports_by_user(user_id)
     
     return render_template('dashboard.html', reports=user_reports)
 
 
-@app.route('/report', methods=['GET', 'POST'])
-def report():
-    """Report waste page - upload photo and location"""
+@app.route('/snap', methods=['GET', 'POST'])
+def snap():
+    """Snap waste page - upload photo and location"""
     # Check if user is logged in
     if 'user_id' not in session:
         flash('Please log in to report waste', 'warning')
@@ -139,10 +211,22 @@ def report():
     
     if request.method == 'POST':
         # Get form data
-        description = request.form.get('description')
-        location = request.form.get('location')
         latitude = request.form.get('latitude')
         longitude = request.form.get('longitude')
+        readable_area = request.form.get('readable_area', '')
+        waste_type = request.form.get('waste_type')
+        description = request.form.get('description', '')
+        severity = request.form.get('severity', '')
+        landmark = request.form.get('landmark', '')
+        
+        # Validate required fields
+        if not latitude or not longitude:
+            flash('Location is required. Please enable geolocation.', 'error')
+            return redirect(request.url)
+        
+        if not waste_type:
+            flash('Waste type is required', 'error')
+            return redirect(request.url)
         
         # Check if file was uploaded
         if 'photo' not in request.files:
@@ -155,16 +239,64 @@ def report():
             flash('No photo selected', 'error')
             return redirect(request.url)
         
-        if file and allowed_file(file.filename):
-            # TODO: Save file and create report in database
-            # For now, just a placeholder
-            
+        # Save uploaded file
+        photo_path = save_uploaded_file(file)
+        
+        if not photo_path:
+            flash('Invalid file type. Please upload a JPG, JPEG, or PNG image.', 'error')
+            return redirect(request.url)
+        
+        # Get user info from session
+        user_id = session['user_id']
+        username = session.get('user_name', '')
+        
+        # Create report in database
+        try:
+            latitude_float = float(latitude)
+            longitude_float = float(longitude)
+        except ValueError:
+            flash('Invalid coordinates', 'error')
+            return redirect(request.url)
+        
+        # Use empty string for optional fields if not provided
+        description = description.strip() if description else None
+        severity = severity if severity else None
+        landmark = landmark.strip() if landmark else None
+        readable_area = readable_area.strip() if readable_area else None
+        
+        success, message, report_id = create_report(
+            user_id=user_id,
+            username=username,
+            latitude=latitude_float,
+            longitude=longitude_float,
+            readable_area=readable_area,
+            photo_path=photo_path,
+            waste_type=waste_type,
+            description=description,
+            severity=severity,
+            landmark=landmark
+        )
+        
+        if success:
             flash('Waste report submitted successfully!', 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('index'))
         else:
-            flash('Invalid file type. Please upload an image.', 'error')
+            flash(f'Error submitting report: {message}', 'error')
     
-    return render_template('report.html')
+    return render_template('snap.html')
+
+@app.route('/find-waste')
+def find_waste():
+    """Find waste location page - shows all waste reports"""
+    # Check if user is logged in
+    if 'user_id' not in session:
+        flash('Please log in to view waste locations', 'warning')
+        return redirect(url_for('signin'))
+    
+    # Get all reports
+    reports = get_all_reports()
+    
+    return render_template('reports.html', reports=reports)
 
 
 @app.route('/logout')
@@ -202,7 +334,8 @@ def internal_server_error(e):
 # ============================================
 
 if __name__ == '__main__':
-    init_db()
+    init_db()  # Initialize auth database
+    init_reports_db()  # Initialize reports database
     # Run the Flask app
     # Debug mode is ON - turn OFF in production!
     app.run(debug=True, host='0.0.0.0')

@@ -1,0 +1,596 @@
+/* ============================================
+   WASTEWATCH - SNAP.CSS
+   Styling for waste reporting form
+   ============================================ */
+
+/* ============================================
+   RESET & BASE STYLES
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f9fafb;
+    color: #4b5563;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+.navbar {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand a {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2933;
+    letter-spacing: -0.5px;
+}
+
+.nav-brand a:hover {
+    color: #2e7d32;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #4b5563;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #2e7d32;
+}
+
+.nav-button {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2e7d32;
+    border: 2px solid #2e7d32;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav-button:hover {
+    background-color: #2e7d32;
+    color: #ffffff;
+}
+
+/* User Dropdown */
+.user-dropdown {
+    position: relative;
+}
+
+.user-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2933;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.user-menu-button:hover {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+}
+
+.user-name {
+    color: #1f2933;
+}
+
+.dropdown-arrow {
+    font-size: 0.7rem;
+    color: #6b7280;
+    transition: transform 0.2s ease;
+}
+
+.user-dropdown.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.user-dropdown.active .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #4b5563;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    border-radius: 6px;
+    margin: 0.25rem;
+}
+
+.dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: #1f2933;
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.snap-section {
+    padding: 2rem;
+    min-height: calc(100vh - 80px);
+}
+
+.snap-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.snap-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid #e5e7eb;
+}
+
+.snap-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2933;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.snap-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* ============================================
+   FLASH MESSAGES
+   ============================================ */
+.flash-messages {
+    margin-bottom: 1.5rem;
+}
+
+.flash-message {
+    padding: 0.875rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.flash-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.flash-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.flash-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+/* ============================================
+   FORM STYLES
+   ============================================ */
+.waste-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2933;
+    margin-bottom: 0.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #1f2933;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+}
+
+.form-input[readonly] {
+    background-color: #f9fafb;
+    cursor: not-allowed;
+}
+
+.form-select {
+    cursor: pointer;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.char-count {
+    font-size: 0.85rem;
+    color: #6b7280;
+    text-align: right;
+}
+
+.char-count-warning {
+    color: #ef4444;
+}
+
+/* ============================================
+   LOCATION BUTTON
+   ============================================ */
+.location-button {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #2e7d32;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.location-button:hover:not(:disabled) {
+    background-color: #255d28;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.location-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.location-button.success {
+    background-color: #059669;
+}
+
+.location-status {
+    min-height: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.status-success {
+    color: #059669;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-error {
+    color: #ef4444;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.loading-spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   FILE UPLOAD
+   ============================================ */
+.file-input {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 2px dashed #d1d5db;
+    border-radius: 6px;
+    background-color: #f9fafb;
+    color: #1f2933;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.file-input:hover {
+    border-color: #2e7d32;
+    background-color: #f0fdf4;
+}
+
+.file-input:focus {
+    outline: none;
+    border-color: #2e7d32;
+    border-style: solid;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.file-info {
+    min-height: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.file-success {
+    color: #059669;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.file-error {
+    color: #ef4444;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.photo-preview-container {
+    margin-top: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.photo-preview {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    object-fit: contain;
+}
+
+.remove-photo-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #ef4444;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.remove-photo-btn:hover {
+    background-color: #dc2626;
+}
+
+/* ============================================
+   FORM ACTIONS
+   ============================================ */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.submit-button {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #2e7d32;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #255d28;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.cancel-button {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4b5563;
+    background-color: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.cancel-button:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 1rem 1.5rem;
+    }
+
+    .nav-brand a {
+        font-size: 1.3rem;
+    }
+
+    .snap-section {
+        padding: 1.5rem;
+    }
+
+    .snap-card {
+        padding: 2rem;
+    }
+
+    .snap-title {
+        font-size: 1.75rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .submit-button,
+    .cancel-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 1rem;
+    }
+
+    .nav-brand a {
+        font-size: 1.2rem;
+    }
+
+    .snap-section {
+        padding: 1rem;
+    }
+
+    .snap-card {
+        padding: 1.5rem;
+    }
+
+    .snap-title {
+        font-size: 1.5rem;
+    }
+
+    .snap-subtitle {
+        font-size: 0.9rem;
+    }
+}
+

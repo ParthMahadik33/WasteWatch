@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snap Waste - WasteWatch</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/snap.css') }}">
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <nav class="nav-container">
+            <!-- Logo / Brand -->
+            <div class="nav-brand">
+                <a href="/">WasteWatch</a>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                {% if session.user_id %}
+                    <!-- User Dropdown (when logged in) -->
+                    <div class="user-dropdown">
+                        <button class="user-menu-button" id="user-menu-btn">
+                            <span class="user-name">{{ session.user_name }}</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="user-dropdown-menu">
+                            <a href="/logout" class="dropdown-item">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Sign In / Sign Up (when not logged in) -->
+                    <a href="/signin" class="nav-link">Sign In</a>
+                    <a href="/signup" class="nav-button">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="snap-section">
+        <div class="snap-container">
+            <div class="snap-card">
+                <!-- Page Title -->
+                <h1 class="snap-title">Report Waste</h1>
+                <p class="snap-subtitle">Capture waste location and details</p>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="flash-messages">
+                            {% for category, message in messages %}
+                                <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Waste Report Form -->
+                <form id="waste-form" class="waste-form" method="POST" enctype="multipart/form-data">
+                    <!-- Location Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">📍 Location</h2>
+                        
+                        <div class="form-group">
+                            <button type="button" id="get-location-btn" class="location-button">
+                                <span id="location-btn-text">Find My Location</span>
+                                <span id="location-loading" class="loading-spinner" style="display: none;">⏳</span>
+                            </button>
+                            <div id="location-status" class="location-status"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="latitude" class="form-label">Latitude *</label>
+                                <input type="text" id="latitude" name="latitude" class="form-input" readonly required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="longitude" class="form-label">Longitude *</label>
+                                <input type="text" id="longitude" name="longitude" class="form-input" readonly required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="readable_area" class="form-label">Readable Area (Optional)</label>
+                            <input type="text" id="readable_area" name="readable_area" class="form-input" placeholder="e.g., Near Central Park, New York">
+                        </div>
+                    </div>
+
+                    <!-- Photo Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">📷 Waste Photo</h2>
+                        
+                        <div class="form-group">
+                            <label for="photo" class="form-label">Upload Photo *</label>
+                            <input type="file" id="photo" name="photo" class="file-input" accept="image/jpeg,image/jpg,image/png" required>
+                            <div id="photo-preview-container" class="photo-preview-container" style="display: none;">
+                                <img id="photo-preview" class="photo-preview" alt="Photo preview">
+                                <button type="button" id="remove-photo" class="remove-photo-btn">Remove</button>
+                            </div>
+                            <div id="file-info" class="file-info"></div>
+                        </div>
+                    </div>
+
+                    <!-- Waste Details Section -->
+                    <div class="form-section">
+                        <h2 class="section-title">🗑️ Waste Details</h2>
+                        
+                        <div class="form-group">
+                            <label for="waste_type" class="form-label">Waste Type *</label>
+                            <select id="waste_type" name="waste_type" class="form-select" required>
+                                <option value="">Select waste type...</option>
+                                <option value="Plastic">Plastic</option>
+                                <option value="Organic">Organic</option>
+                                <option value="Construction debris">Construction debris</option>
+                                <option value="E-waste">E-waste</option>
+                                <option value="Mixed / Other">Mixed / Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="form-label">Short Description (Optional, max 200 chars)</label>
+                            <textarea id="description" name="description" class="form-textarea" rows="3" maxlength="200" placeholder="Brief description of the waste..."></textarea>
+                            <div class="char-count">
+                                <span id="char-count">0</span>/200 characters
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="severity" class="form-label">Severity / Urgency (Optional)</label>
+                            <select id="severity" name="severity" class="form-select">
+                                <option value="">Select severity...</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="landmark" class="form-label">Landmark (Optional)</label>
+                            <input type="text" id="landmark" name="landmark" class="form-input" placeholder="e.g., Near ABC Shop, Main Street">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" id="submit-btn" class="submit-button" disabled>
+                            <span id="submit-text">Submit Report</span>
+                            <span id="submit-loading" class="loading-spinner" style="display: none;">Submitting...</span>
+                        </button>
+                        <a href="/" class="cancel-button">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/snap.js') }}"></script>
+</body>
+</html>
+
