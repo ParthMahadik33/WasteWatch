@@ -13,12 +13,14 @@ from werkzeug.utils import secure_filename
 from auth import init_db, signup as auth_signup, signin as auth_signin
 from reports_db import init_reports_db, create_report, get_all_reports, get_reports_by_user
 
-# Try to import Pillow for image compression
+# Try to import Pillow for image compression (optional)
+# Pillow is optional - the app works without it, but images won't be compressed
 try:
     from PIL import Image
     PIL_AVAILABLE = True
 except ImportError:
     PIL_AVAILABLE = False
+    print("Note: Pillow not available. Image compression will be skipped.")
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -48,7 +50,7 @@ def allowed_file(filename):
 
 def compress_image(image_path, max_size=(1920, 1920), quality=85):
     """
-    Compress an image if PIL is available
+    Compress an image if PIL is available (optional feature)
     
     Args:
         image_path: Path to the image file
@@ -59,6 +61,7 @@ def compress_image(image_path, max_size=(1920, 1920), quality=85):
         bool: True if compression was successful, False otherwise
     """
     if not PIL_AVAILABLE:
+        # Pillow not available - skip compression, image will be saved as-is
         return False
     
     try:
@@ -79,7 +82,8 @@ def compress_image(image_path, max_size=(1920, 1920), quality=85):
         img.save(image_path, 'JPEG', quality=quality, optimize=True)
         return True
     except Exception as e:
-        print(f"Error compressing image: {str(e)}")
+        # If compression fails, continue without compression
+        print(f"Warning: Image compression failed: {str(e)}. Continuing without compression.")
         return False
 
 def save_uploaded_file(file):
